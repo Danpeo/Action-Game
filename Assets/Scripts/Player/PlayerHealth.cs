@@ -19,8 +19,8 @@ namespace Player
             {
                 if (_state.CurrentHp != value)
                 {
-                    HealthChanged?.Invoke();
                     _state.CurrentHp = value;
+                    HealthChanged?.Invoke();
                 }
             }
         }
@@ -37,6 +37,8 @@ namespace Player
                 return;
 
             Current -= damage;
+            Debug.Log($"TAKE DAMAGE:" + _state.CurrentHp);
+            
             //TODO: Play Animation
         }
 

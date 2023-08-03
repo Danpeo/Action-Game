@@ -1,5 +1,3 @@
-using UnityEditor.Animations;
-
 namespace Logic
 {
     public interface IAnimationStateReader

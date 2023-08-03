@@ -53,10 +53,10 @@ namespace Infrastructure.States
 
         private IInputService InputService()
         {
-            if (Application.isEditor)
+            /*if (Application.isEditor)
                 return new StandaloneInputService();
-            else
-                return new MobileInputService();
+            else*/
+                return new StandaloneInputService();
         }
     }
 }
