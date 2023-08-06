@@ -1,4 +1,4 @@
-using Player;
+using Logic;
 using UnityEngine;
 
 namespace UI
@@ -6,19 +6,27 @@ namespace UI
     public class ActorUI : MonoBehaviour
     {
         [SerializeField] private HealthBar _healthBar;
-        private PlayerHealth _playerHealth;
+        private IHealth _health;
 
-        private void OnDestroy() => 
-            _playerHealth.HealthChanged -= UpdateBar;
-
-        public void Construct(PlayerHealth playerHealth)
+        private void Start()
         {
-            _playerHealth = playerHealth;
+            IHealth health = GetComponent<IHealth>();
 
-            _playerHealth.HealthChanged += UpdateBar;
+            if (health != null)
+                Construct(health);
         }
-        
-        private void UpdateBar() => 
-            _healthBar.SetValue(_playerHealth.Current, _playerHealth.Max);
+
+        private void OnDestroy() =>
+            _health.HealthChanged -= UpdateBar;
+
+        public void Construct(IHealth health)
+        {
+            _health = health;
+
+            _health.HealthChanged += UpdateBar;
+        }
+
+        private void UpdateBar() =>
+            _healthBar.SetValue(_health.Current, _health.Max);
     }
 }

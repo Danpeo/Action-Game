@@ -1,16 +1,18 @@
 using System;
 using Infrastructure.Data;
 using Infrastructure.Services.PersistentProgress;
+using Logic;
 using UnityEngine;
 
 namespace Player
 {
     [RequireComponent(typeof(PlayerAnimator))]
-    public class PlayerHealth : MonoBehaviour, ISavedProgress
+    public class PlayerHealth : MonoBehaviour, IHealth, ISavedProgress
     {
+        [SerializeField] private PlayerAnimator _animator;
         private ProgressState _state;
 
-        public Action HealthChanged;
+        public event Action HealthChanged;
 
         public float Current
         {
@@ -39,7 +41,7 @@ namespace Player
             Current -= damage;
             Debug.Log($"TAKE DAMAGE:" + _state.CurrentHp);
             
-            //TODO: Play Animation
+            _animator.PlayHit();
         }
 
         public void LoadProgress(PlayerProgress progress)

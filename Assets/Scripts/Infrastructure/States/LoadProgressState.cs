@@ -36,6 +36,8 @@ namespace Infrastructure.States
         {
             var progress = new PlayerProgress("Main");
             progress.PlayerState.MaxHp = 50;
+            progress.PlayerStats.Damage = 15;
+            progress.PlayerStats.AttackRadius = 5.5f;
             progress.PlayerState.ResetHp();
             
             return progress;

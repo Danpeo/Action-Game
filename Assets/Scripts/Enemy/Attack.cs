@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using Infrastructure.Factory;
 using Infrastructure.Services;
+using Logic;
 using Player;
 using UnityEngine;
 
@@ -53,7 +54,7 @@ namespace Enemy
             if (Hit(out Collider hit))
             {
                 PhysicsDebug.DrawDebug(GetStartPoint(), _attackRadius, Color.red);
-                hit.transform.GetComponent<PlayerHealth>().TakeDamage(_damage);
+                hit.transform.GetComponent<IHealth>().TakeDamage(_damage);
             }
         }
 

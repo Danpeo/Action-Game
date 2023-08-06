@@ -10,12 +10,15 @@ namespace Player
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private Animator _animator;
 
+        private static readonly int Attack_1 = Animator.StringToHash("Attack_1");
         private static readonly int IsMoving = Animator.StringToHash("IsWalking");
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int Hit = Animator.StringToHash("Hit");
         private static readonly int Die = Animator.StringToHash("Die");
 
         private readonly int _idleStateHash = Animator.StringToHash("Idle");
+        private readonly int _attack_1StateHash = Animator.StringToHash("2Hand-Sword-Attack1");
+
         private readonly int _walkingStateHash = Animator.StringToHash("MoveTree");
         private readonly int _deathStateHash = Animator.StringToHash("Sword1h_Death_2");
 
@@ -30,6 +33,9 @@ namespace Player
         public event Action<AnimatorState> StateExited;
 
         public AnimatorState State { get; private set; }
+        
+        public bool IsAttacking => State == AnimatorState.Attack_1;
+
 
         public void PlayHit() =>
             _animator.SetTrigger(Hit);
@@ -45,6 +51,9 @@ namespace Player
         
         public void StopMoving() => _animator.SetBool(IsMoving, false);
         
+        public void PlayAttack_1() => 
+            _animator.SetTrigger(Attack_1);
+        
         public void EnteredState(int stateHash)
         {
             State = StateFor(stateHash);
@@ -59,6 +68,8 @@ namespace Player
             AnimatorState state;
             if (stateHash == _idleStateHash)
                 state = AnimatorState.Idle;
+            else if (stateHash == _attack_1StateHash)
+                state = AnimatorState.Attack_1;
             else if (stateHash == _walkingStateHash)
                 state = AnimatorState.Walking;
             else if (stateHash == _deathStateHash)

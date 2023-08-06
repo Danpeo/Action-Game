@@ -6,7 +6,7 @@ namespace Infrastructure.Services.Input
     {
         protected const string HorizontalMove = "Horizontal";
         protected const string VerticalMove = "Vertical";
-        private const string Button = "Fire";
+        private const string Button = "Fire1";
         public abstract Vector2 MoveAxis { get; }
         public abstract Vector2 LookAxis { get; }
 

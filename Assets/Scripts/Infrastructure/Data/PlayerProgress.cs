@@ -7,11 +7,13 @@ namespace Infrastructure.Data
     {
         public ProgressState PlayerState;
         public WorldData WorldData;
+        public PlayerStats PlayerStats;
 
         public PlayerProgress(string initialLevel)
         {
             WorldData = new WorldData(initialLevel);
             PlayerState = new ProgressState();
+            PlayerStats = new PlayerStats();
         }
     }
 }
