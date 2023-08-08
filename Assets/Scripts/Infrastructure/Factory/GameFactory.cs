@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Infrastructure.AssetManagement;
 using Infrastructure.Services.PersistentProgress;
+using StaticData;
 using UnityEngine;
 
 namespace Infrastructure.Factory
@@ -56,12 +57,17 @@ namespace Infrastructure.Factory
             return gameObject;
         }
 
-        private void Register(ISavedProgressReader progressReader)
+        public void Register(ISavedProgressReader progressReader)
         {
             if (progressReader is ISavedProgress progressWriter)
                 ProgressWriters.Add(progressWriter);
             
             ProgressReaders.Add(progressReader);
+        }
+
+        public GameObject CreateEnemy(EnemyTypeId enemyTypeId, Transform parent)
+        {
+            throw new NotImplementedException();
         }
     }
 }

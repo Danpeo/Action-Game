@@ -1,5 +1,5 @@
-using System;
 using CameraLogic;
+using Enemy;
 using Infrastructure.Factory;
 using Infrastructure.Services.PersistentProgress;
 using Player;
@@ -10,7 +10,8 @@ namespace Infrastructure.States
 {
     public class LoadLevelState : IPayLoadState<string>
     {
-        private const string InitialPoint = "InitialPoint";
+        private const string InitialPointTag = "InitialPoint";
+        private const string EnemySpawnerTag = "EnemySpawner";
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingCurtain _curtain;
@@ -54,12 +55,22 @@ namespace Infrastructure.States
 
         private void InitializeGameWorld()
         {
-            GameObject initialPoint = GameObject.FindWithTag(InitialPoint);
-            GameObject player = _gameFactory.CreatePlayer(initialPoint);
+            InitializeSpawners();
+            
+            GameObject player = _gameFactory.CreatePlayer(GameObject.FindWithTag(InitialPointTag));
 
             InitializeHud(player);
 
             CameraFollow(player);
+        }
+
+        private void InitializeSpawners()
+        {
+            foreach (GameObject spawnerObject in GameObject.FindGameObjectsWithTag(EnemySpawnerTag))
+            {
+                var spawner = spawnerObject.GetComponent<EnemySpawner>();
+                _gameFactory.Register(spawner);
+            }
         }
 
         private void InitializeHud(GameObject player)

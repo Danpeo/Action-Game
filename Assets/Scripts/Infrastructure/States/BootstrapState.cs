@@ -4,7 +4,6 @@ using Infrastructure.SaveLoad;
 using Infrastructure.Services;
 using Infrastructure.Services.Input;
 using Infrastructure.Services.PersistentProgress;
-using UnityEngine;
 
 namespace Infrastructure.States
 {
@@ -49,6 +48,15 @@ namespace Infrastructure.States
             
             _services.RegisterSingle<ISaveLoadService>(
                 new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
+
+            RegisterStaticData();
+        }
+
+        private void RegisterStaticData()
+        {
+            IStaticDataService staticDataService = new StaticDataService();
+            staticDataService.LoadEnemies();
+            _services.RegisterSingle(staticDataService);
         }
 
         private IInputService InputService()
