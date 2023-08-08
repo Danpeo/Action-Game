@@ -18,6 +18,18 @@ namespace StaticData
         
         [Range(0.1f, 10f)]
         public float EffectiveDistance = 0.5f;
+
+        [Range(0f, 50f)]
+        public float MoveSpeed = 5f;
+
+        [Range(0f, 20f)]
+        public float AttackCooldown;
+
+        [Range(1, 30)]
+        public int MinLoot;
+        
+        [Range(1, 30)]
+        public int MaxLoot;
         
         public GameObject Prefab;
     }

@@ -13,7 +13,10 @@ namespace Enemy
         private Transform _playerTransform;
         private IGameFactory _gameFactory;
 
-        private void Start()
+        public void Contruct(Transform playerTransform) => 
+            _playerTransform = playerTransform;
+
+        /*private void Start()
         {
             _gameFactory = AllServices.Container.Single<IGameFactory>();
 
@@ -21,7 +24,7 @@ namespace Enemy
                 InitializePlayerTransform();
             else
                 _gameFactory.PlayerCreated += PlayerCreated;
-        }
+        }*/
 
         private void Update()
         {
@@ -29,13 +32,13 @@ namespace Enemy
                 MoveToPlayer();
         }
 
-        private void PlayerCreated() =>
-            InitializePlayerTransform();
+        /*private void PlayerCreated() =>
+            InitializePlayerTransform();*/
 
-        private void InitializePlayerTransform() =>
-            _playerTransform = _gameFactory.PlayerGameObject.transform;
+        /*private void InitializePlayerTransform() =>
+            _playerTransform = _gameFactory.PlayerGameObject.transform;*/
 
-        private void MoveToPlayer() => 
+        private void MoveToPlayer() =>
             _agent.destination = _playerTransform.position;
 
         private bool PlayerNotReached()

@@ -9,34 +9,17 @@ namespace Enemy
         [SerializeField] private float _speed;
 
         private Transform _playerTransform;
-        private IGameFactory _gameFactory;
         private Vector3 _positionToLook;
 
-        private void Start()
-        {
-            _gameFactory = AllServices.Container.Single<IGameFactory>();
-
-            if (IsHeroExist())
-                InitializeHeroTransform();
-            else
-                _gameFactory.PlayerCreated += OnPlayerCreated;
-        }
-
+        public void Construct(Transform playerTransform) =>
+            _playerTransform = playerTransform;
+        
         private void Update()
         {
             if (IsInitialized())
                 RotateTowardsHero();
         }
-
-        private void OnDestroy()
-        {
-            if(_gameFactory != null)
-                _gameFactory.PlayerCreated -= OnPlayerCreated;
-        }
-
-        private bool IsHeroExist() => 
-            _gameFactory.PlayerGameObject != null;
-
+        
         private void RotateTowardsHero()
         {
             UpdatePositionToLookAt();
@@ -61,10 +44,5 @@ namespace Enemy
 
         private bool IsInitialized() => 
             _playerTransform != null;
-    
-        private void OnPlayerCreated() =>
-            InitializeHeroTransform();
-
-        private void InitializeHeroTransform() =>
-            _playerTransform = _gameFactory.PlayerGameObject.transform;
+        
     }}

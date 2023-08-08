@@ -8,7 +8,7 @@ namespace Infrastructure.Data
         public ProgressState PlayerState;
         public WorldData WorldData;
         public PlayerStats PlayerStats;
-        public KillData KillData { get; set; }
+        public KillData KillData;
 
 
         public PlayerProgress(string initialLevel)

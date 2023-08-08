@@ -1,10 +1,7 @@
-using System.Collections;
 using System.Linq;
-using Infrastructure.Factory;
-using Infrastructure.Services;
 using Logic;
-using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Enemy
 {
@@ -12,13 +9,21 @@ namespace Enemy
     public class Attack : MonoBehaviour
     {
         [SerializeField] private EnemyAnimator _animator;
-        [SerializeField] private float _attackCooldown = 1f;
-        [SerializeField] private float _attackRadius = 0.5f;
-        [SerializeField] private float _effectiveDistance = 0.5f;
+        
+        [FormerlySerializedAs("_attackCooldown")] 
+        public float AttackCooldown = 1f;
+        
+        [FormerlySerializedAs("_attackRadius")]
+        public float AttackRadius = 0.5f;
+        
+        [FormerlySerializedAs("_effectiveDistance")] 
+        public float EffectiveDistance = 0.5f;
+        
         [SerializeField] private float _hitStartPointOffsetY = 0.5f;
-        [SerializeField] private float _damage = 10f;
+        
+        [FormerlySerializedAs("_damage")] 
+        public float Damage = 10f;
 
-        private IGameFactory _gameFactory;
         private Transform _playerTransform;
         private float _currentAttackCooldown;
         private bool _isAttacking;
@@ -26,13 +31,12 @@ namespace Enemy
         private Collider[] _hits = new Collider[1];
         private bool _attackIsActive;
 
+        public void Construct(Transform playerTransform) =>
+            _playerTransform = playerTransform;
+
         private void Awake()
         {
-            _gameFactory = AllServices.Container.Single<IGameFactory>();
-
             _layerMask = 1 << LayerMask.NameToLayer("Player");
-
-            _gameFactory.PlayerCreated += OnPlayerCreated;
         }
 
         private void Update()
@@ -53,20 +57,20 @@ namespace Enemy
         {
             if (Hit(out Collider hit))
             {
-                PhysicsDebug.DrawDebug(GetStartPoint(), _attackRadius, Color.red);
-                hit.transform.GetComponent<IHealth>().TakeDamage(_damage);
+                PhysicsDebug.DrawDebug(GetStartPoint(), AttackRadius, Color.red);
+                hit.transform.GetComponent<IHealth>().TakeDamage(Damage);
             }
         }
 
-        public void EnableAttack() => 
+        public void EnableAttack() =>
             _attackIsActive = true;
 
-        public void DisableAttack() => 
+        public void DisableAttack() =>
             _attackIsActive = false;
 
         private bool Hit(out Collider hit)
         {
-            int hitCount = Physics.OverlapSphereNonAlloc(GetStartPoint(), _attackRadius, _hits, _layerMask);
+            int hitCount = Physics.OverlapSphereNonAlloc(GetStartPoint(), AttackRadius, _hits, _layerMask);
 
             hit = _hits.FirstOrDefault();
 
@@ -75,14 +79,14 @@ namespace Enemy
 
         private void OnAttackEnded()
         {
-            _currentAttackCooldown = _attackCooldown;
+            _currentAttackCooldown = AttackCooldown;
             _isAttacking = false;
         }
 
         private Vector3 GetStartPoint() =>
             new Vector3(transform.position.x, transform.position.y + _hitStartPointOffsetY,
                 transform.position.z) +
-            transform.forward * _effectiveDistance;
+            transform.forward * EffectiveDistance;
 
         private bool CooldownIsUp() =>
             _currentAttackCooldown <= 0f;
@@ -97,8 +101,5 @@ namespace Enemy
 
         private bool CanAttack() =>
             _attackIsActive && !_isAttacking && CooldownIsUp();
-
-        private void OnPlayerCreated() =>
-            _playerTransform = _gameFactory.PlayerGameObject.transform;
     }
 }
