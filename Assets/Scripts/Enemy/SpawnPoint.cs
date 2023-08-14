@@ -1,31 +1,28 @@
 using Infrastructure.Data;
 using Infrastructure.Factory;
-using Infrastructure.Services;
 using Infrastructure.Services.PersistentProgress;
-using Logic;
 using StaticData;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Enemy
 {
-    public class EnemySpawner : MonoBehaviour, ISavedProgress
+    public class SpawnPoint : MonoBehaviour, ISavedProgress
     {
-        [SerializeField] private EnemyTypeId _enemyTypeId;
+        [FormerlySerializedAs("_enemyTypeId")] 
+        public EnemyTypeId EnemyTypeId;
+        public string Id { get; set; }
 
-        private string _id;
-        public bool _isDead;
+        private bool _isDead;
         private IGameFactory _gameFactory;
         private EnemyDeath _enemyDeath;
 
-        private void Awake()
-        {
-            _id = GetComponent<UniqueId>().Id;
-            _gameFactory = AllServices.Container.Single<IGameFactory>();
-        }
+        public void Construct(IGameFactory gameFactory) => 
+            _gameFactory = gameFactory;
 
         public void LoadProgress(PlayerProgress progress)
         {
-            if (progress.KillData.ClearedSpawners.Contains(_id))
+            if (progress.KillData.ClearedSpawners.Contains(Id))
                 _isDead = true;
             else
                 Spawn();
@@ -34,12 +31,12 @@ namespace Enemy
         public void UpdateProgress(PlayerProgress progress)
         {
             if (_isDead)
-                progress.KillData.ClearedSpawners.Add(_id);
+                progress.KillData.ClearedSpawners.Add(Id);
         }
 
         private void Spawn()
         {
-            GameObject enemy = _gameFactory.CreateEnemy(_enemyTypeId, transform);
+            GameObject enemy = _gameFactory.CreateEnemy(EnemyTypeId, transform);
 
             _enemyDeath = enemy.GetComponent<EnemyDeath>();
 

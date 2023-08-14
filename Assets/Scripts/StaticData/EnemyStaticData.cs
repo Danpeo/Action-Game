@@ -25,10 +25,8 @@ namespace StaticData
         [Range(0f, 20f)]
         public float AttackCooldown;
 
-        [Range(1, 30)]
         public int MinLoot;
         
-        [Range(1, 30)]
         public int MaxLoot;
         
         public GameObject Prefab;

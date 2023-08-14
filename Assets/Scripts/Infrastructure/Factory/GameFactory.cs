@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using Enemy;
 using Infrastructure.AssetManagement;
+using Infrastructure.Data;
 using Infrastructure.Services;
 using Infrastructure.Services.PersistentProgress;
 using Infrastructure.Services.Ranomizer;
 using Logic;
+using Logic.EnemySpawners;
 using StaticData;
 using UI;
 using UnityEngine;
@@ -18,16 +20,19 @@ namespace Infrastructure.Factory
         private readonly IAssets _assets;
         private readonly IStaticDataService _staticDataService;
         private readonly IRandomService _randomService;
+        private readonly IPersistentProgressService _progressService;
 
         public List<ISavedProgressReader> ProgressReaders { get; } = new();
         public List<ISavedProgress> ProgressWriters { get; } = new();
         private GameObject PlayerGameObject { get; set; }
 
-        public GameFactory(IAssets assets, IStaticDataService staticDataService, IRandomService randomService)
+        public GameFactory(IAssets assets, IStaticDataService staticDataService, IRandomService randomService,
+            IPersistentProgressService progressService)
         {
             _assets = assets;
             _staticDataService = staticDataService;
             _randomService = randomService;
+            _progressService = progressService;
         }
 
         public GameObject CreatePlayer(GameObject at)
@@ -36,8 +41,25 @@ namespace Infrastructure.Factory
             return PlayerGameObject;
         }
 
-        public GameObject CreateHud() =>
-            InstantiateRegistered(AssetPath.Hud);
+        public GameObject CreateHud()
+        {
+            GameObject hud = InstantiateRegistered(AssetPath.Hud);
+            
+            hud.GetComponentInChildren<LootCounter>()
+                .Construct(_progressService.Progress.WorldData);
+
+            return hud;
+        }
+
+        public void CreateSpawner(Vector3 spawnerPosition, string spawnerId, EnemyTypeId spawnerEnemyTypeId)
+        {
+            SpawnPoint spawner = InstantiateRegistered(AssetPath.EnemySpawner, spawnerPosition)
+                .GetComponent<SpawnPoint>();
+
+            spawner.Construct(this);
+            spawner.Id = spawnerId;
+            spawner.EnemyTypeId = spawnerEnemyTypeId;
+        }
 
         public void Cleanup()
         {
@@ -67,10 +89,10 @@ namespace Infrastructure.Factory
             enemy.GetComponent<NavMeshAgent>().speed = enemyData.MoveSpeed;
 
             var loot = enemy.GetComponentInChildren<LootSpawner>();
-            
+
             loot.SetLoot(enemyData.MinLoot, enemyData.MaxLoot);
             loot.Construct(this, _randomService);
-            
+
             var attack = enemy.GetComponent<Attack>();
             attack.Construct(PlayerGameObject.transform);
             attack.Damage = enemyData.Damage;
@@ -83,8 +105,15 @@ namespace Infrastructure.Factory
             return enemy;
         }
 
-        public GameObject CreateLoot() => 
-            InstantiateRegistered(AssetPath.Loot);
+        public LootPiece CreateLoot()
+        {
+            var lootPiece = InstantiateRegistered(AssetPath.Loot)
+                .GetComponent<LootPiece>();
+
+            lootPiece.Construct(_progressService.Progress.WorldData);
+
+            return lootPiece;
+        }
 
         private void RegisterProgressWatchers(GameObject gameObject)
         {

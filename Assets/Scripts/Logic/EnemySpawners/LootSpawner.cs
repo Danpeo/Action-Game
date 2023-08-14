@@ -1,10 +1,10 @@
-using System;
+using Enemy;
 using Infrastructure.Data;
 using Infrastructure.Factory;
 using Infrastructure.Services.Ranomizer;
 using UnityEngine;
 
-namespace Enemy
+namespace Logic.EnemySpawners
 {
     public class LootSpawner : MonoBehaviour
     {
@@ -25,21 +25,28 @@ namespace Enemy
             EnemyDeath.DeathOccured += SpawnLoot;
         }
 
-        private void SpawnLoot()
-        {
-            GameObject loot = _gameFactory.CreateLoot();
-            loot.transform.position = transform.position;
-
-            var lootItem = new Loot()
-            {
-                Value = _randomService.Next(_lootMin, _lootMax)
-            };
-        }
-
         public void SetLoot(int lootMin, int lootMax)
         {
             _lootMin = lootMin;
             _lootMax = lootMax;
+        }
+
+        private void SpawnLoot()
+        {
+            LootPiece loot = _gameFactory.CreateLoot();
+            loot.transform.position = transform.position;
+
+            Loot lootItem = GenerateLoot();
+            
+            loot.Initialize(lootItem);
+        }
+
+        private Loot GenerateLoot()
+        {
+            return new Loot()
+            {
+                Value = _randomService.Next(_lootMin, _lootMax)
+            };
         }
     }
 }

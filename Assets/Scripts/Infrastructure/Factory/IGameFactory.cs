@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Enemy;
 using Infrastructure.Services;
 using Infrastructure.Services.PersistentProgress;
 using StaticData;
@@ -12,9 +13,9 @@ namespace Infrastructure.Factory
         List<ISavedProgress> ProgressWriters { get; }
         GameObject CreatePlayer(GameObject at);
         GameObject CreateHud();
+        void CreateSpawner(Vector3 spawnerPosition, string spawnerId, EnemyTypeId spawnerEnemyTypeId);
         void Cleanup();
-        void Register(ISavedProgressReader progressReader);
         GameObject CreateEnemy(EnemyTypeId enemyTypeId, Transform parent);
-        GameObject CreateLoot();
+        LootPiece CreateLoot();
     }
 }
