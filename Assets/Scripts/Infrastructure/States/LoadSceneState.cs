@@ -5,6 +5,7 @@ using Infrastructure.Services.PersistentProgress;
 using Player;
 using StaticData;
 using UI;
+using UI.Elements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
