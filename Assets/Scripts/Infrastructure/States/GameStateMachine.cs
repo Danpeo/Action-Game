@@ -6,6 +6,7 @@ using Infrastructure.Services;
 using Infrastructure.Services.PersistentProgress;
 using UI;
 using UI.Elements;
+using UI.Services.Factory;
 
 namespace Infrastructure.States
 {
@@ -23,7 +24,8 @@ namespace Infrastructure.States
                 [typeof(LoadSceneState)] =
                     new LoadSceneState(this, sceneLoader, curtain, services.Single<IGameFactory>(),
                         services.Single<IPersistentProgressService>(),
-                        services.Single<IStaticDataService>()),
+                        services.Single<IStaticDataService>(), 
+                        services.Single<IUiFactory>()),
 
                 [typeof(LoadProgressState)] = new LoadProgressState(this, services.Single<IPersistentProgressService>(),
                     services.Single<ISaveLoadService>()),

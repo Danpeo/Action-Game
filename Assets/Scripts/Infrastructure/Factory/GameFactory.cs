@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using Enemy;
 using Infrastructure.AssetManagement;
-using Infrastructure.Data;
 using Infrastructure.Services;
 using Infrastructure.Services.PersistentProgress;
 using Infrastructure.Services.Ranomizer;
 using Logic;
 using Logic.EnemySpawners;
 using StaticData;
-using UI;
 using UI.Elements;
+using UI.Services.Windows;
 using UnityEngine;
 using UnityEngine.AI;
 using Object = UnityEngine.Object;
@@ -22,18 +21,19 @@ namespace Infrastructure.Factory
         private readonly IStaticDataService _staticDataService;
         private readonly IRandomService _randomService;
         private readonly IPersistentProgressService _progressService;
-
+        private readonly IWindowService _windowService;
         public List<ISavedProgressReader> ProgressReaders { get; } = new();
         public List<ISavedProgress> ProgressWriters { get; } = new();
         private GameObject PlayerGameObject { get; set; }
 
         public GameFactory(IAssets assets, IStaticDataService staticDataService, IRandomService randomService,
-            IPersistentProgressService progressService)
+            IPersistentProgressService progressService, IWindowService windowService)
         {
             _assets = assets;
             _staticDataService = staticDataService;
             _randomService = randomService;
             _progressService = progressService;
+            _windowService = windowService;
         }
 
         public GameObject CreatePlayer(GameObject at)
@@ -48,6 +48,9 @@ namespace Infrastructure.Factory
             
             hud.GetComponentInChildren<LootCounter>()
                 .Construct(_progressService.Progress.WorldData);
+
+            foreach (OpenWindowButton openWindowButton in hud.GetComponentsInChildren<OpenWindowButton>())
+                openWindowButton.Construct(_windowService);
 
             return hud;
         }

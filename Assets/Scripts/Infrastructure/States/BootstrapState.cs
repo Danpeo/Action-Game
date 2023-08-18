@@ -5,6 +5,8 @@ using Infrastructure.Services;
 using Infrastructure.Services.Input;
 using Infrastructure.Services.PersistentProgress;
 using Infrastructure.Services.Ranomizer;
+using UI.Services.Factory;
+using UI.Services.Windows;
 
 namespace Infrastructure.States
 {
@@ -39,9 +41,9 @@ namespace Infrastructure.States
         private void RegisterServices()
         {
             RegisterStaticData();
-            
+
             _services.RegisterSingle<IInputService>(InputService());
-            
+
             _services.RegisterSingle<IRandomService>(new RandomService());
 
 
@@ -49,11 +51,20 @@ namespace Infrastructure.States
 
             _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
 
+            _services.RegisterSingle<IUiFactory>(new UiFactory(_services.Single<IAssets>(),
+                _services.Single<IStaticDataService>(),
+                _services.Single<IPersistentProgressService>()
+            ));
+
+            _services.RegisterSingle<IWindowService>(new WindowService(_services.Single<IUiFactory>()));
+
             _services.RegisterSingle<IGameFactory>(
                 new GameFactory(_services.Single<IAssets>(),
                     _services.Single<IStaticDataService>(),
                     _services.Single<IRandomService>(),
-                    _services.Single<IPersistentProgressService>()));
+                    _services.Single<IPersistentProgressService>(),
+                    _services.Single<IWindowService>()
+                ));
 
             _services.RegisterSingle<ISaveLoadService>(
                 new SaveLoadService(_services.Single<IPersistentProgressService>(), _services.Single<IGameFactory>()));
@@ -71,7 +82,7 @@ namespace Infrastructure.States
             /*if (Application.isEditor)
                 return new StandaloneInputService();
             else*/
-                return new StandaloneInputService();
+            return new StandaloneInputService();
         }
     }
 }
