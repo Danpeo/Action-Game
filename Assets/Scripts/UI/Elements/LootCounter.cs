@@ -12,17 +12,12 @@ namespace UI.Elements
         public void Construct(WorldData worldData)
         {
             _worldData = worldData;
-            _worldData.LootData.Changed += UpdateCounter;
-        }
 
-        private void Start()
-        {
+            _worldData.LootData.Changed += UpdateCounter;
             UpdateCounter();
         }
 
-        private void UpdateCounter()
-        {
+        private void UpdateCounter() =>
             _counter.text = $"{_worldData.LootData.Collected}";
-        }
     }
 }

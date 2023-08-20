@@ -17,3 +17,4 @@ MonoBehaviour:
   - Id: Main_4a796b20-2055-450a-85d5-2f3449db5a9a
     EnemyTypeId: 0
     Position: {x: 4.35, y: 0.7, z: 3.827}
+  InitialPlayerPosition: {x: -0.38, y: 1.4, z: 3.7}

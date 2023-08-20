@@ -42,7 +42,9 @@ namespace Infrastructure.States
         {
             RegisterStaticData();
 
-            _services.RegisterSingle<IInputService>(InputService());
+            _services.RegisterSingle<IGameStateMachine>(_stateMachine);
+            
+            _services.RegisterSingle(InputService());
 
             _services.RegisterSingle<IRandomService>(new RandomService());
 

@@ -36,9 +36,9 @@ namespace Infrastructure.Factory
             _windowService = windowService;
         }
 
-        public GameObject CreatePlayer(GameObject at)
+        public GameObject CreatePlayer(Vector3 at)
         {
-            PlayerGameObject = InstantiateRegistered(AssetPath.Player, at.transform.position);
+            PlayerGameObject = InstantiateRegistered(AssetPath.Player, at);
             return PlayerGameObject;
         }
 
