@@ -34,9 +34,9 @@ namespace Enemy
                 progress.KillData.ClearedSpawners.Add(Id);
         }
 
-        private void Spawn()
+        private async void Spawn()
         {
-            GameObject enemy = _gameFactory.CreateEnemy(EnemyTypeId, transform);
+            GameObject enemy = await _gameFactory.CreateEnemy(EnemyTypeId, transform);
 
             _enemyDeath = enemy.GetComponent<EnemyDeath>();
 

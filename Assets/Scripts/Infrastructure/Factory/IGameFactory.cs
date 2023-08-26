@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Enemy;
 using Infrastructure.Services;
 using Infrastructure.Services.PersistentProgress;
@@ -11,11 +12,12 @@ namespace Infrastructure.Factory
     {
         List<ISavedProgressReader> ProgressReaders { get; }
         List<ISavedProgress> ProgressWriters { get; }
-        GameObject CreatePlayer(Vector3 at);
-        GameObject CreateHud();
-        void CreateSpawner(Vector3 spawnerPosition, string spawnerId, EnemyTypeId spawnerEnemyTypeId);
+        Task<GameObject> CreatePlayer(Vector3 at);
+        Task<GameObject> CreateHud();
+        Task CreateSpawner(Vector3 spawnerPosition, string spawnerId, EnemyTypeId spawnerEnemyTypeId);
         void Cleanup();
-        GameObject CreateEnemy(EnemyTypeId enemyTypeId, Transform parent);
-        LootPiece CreateLoot();
+        Task<GameObject> CreateEnemy(EnemyTypeId enemyTypeId, Transform parent);
+        Task<LootPiece> CreateLoot();
+        Task WarmUp();
     }
 }

@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 
 namespace StaticData
 {
@@ -29,6 +31,7 @@ namespace StaticData
         
         public int MaxLoot;
         
-        public GameObject Prefab;
+        [FormerlySerializedAs("Prefab")] 
+        public AssetReferenceGameObject PrefabReference;
     }
 }

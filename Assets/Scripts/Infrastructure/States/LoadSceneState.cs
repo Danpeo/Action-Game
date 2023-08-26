@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CameraLogic;
 using Infrastructure.Factory;
 using Infrastructure.Services;
@@ -38,25 +39,26 @@ namespace Infrastructure.States
         {
             _curtain.Show();
             _gameFactory.Cleanup();
+            _gameFactory.WarmUp();
             _sceneLoader.Load(sceneName, OnLoaded);
         }
 
         public void Exit() =>
             _curtain.Hide();
 
-        private void OnLoaded()
+        private async void OnLoaded()
         {
-            InitializeUiRoot();
+            await InitializeUiRoot();
 
-            InitializeGameWorld();
+            await InitializeGameWorld();
 
             InformProgressReaders();
 
             _stateMachine.Enter<GameLoopState>();
         }
 
-        private void InitializeUiRoot() =>
-            _uiFactory.CreateUiRoot();
+        private async Task InitializeUiRoot() =>
+            await _uiFactory.CreateUiRoot();
 
         private void InformProgressReaders()
         {
@@ -64,15 +66,15 @@ namespace Infrastructure.States
                 progressReader.LoadProgress(_progressService.Progress);
         }
 
-        private void InitializeGameWorld()
+        private async Task InitializeGameWorld()
         {
             LevelStaticData levelData = GetLevelStaticData();
 
-            InitializeSpawners(levelData);
+            await InitializeSpawners(levelData);
 
-            GameObject player = InitializePlayer(levelData);
+            GameObject player = await InitializePlayer(levelData);
 
-            InitializeHud(player);
+            await InitializeHud(player);
 
             CameraFollow(player);
         }
@@ -80,18 +82,18 @@ namespace Infrastructure.States
         private LevelStaticData GetLevelStaticData() => 
             _staticDataService.ForLevel(SceneManager.GetActiveScene().name);
 
-        private GameObject InitializePlayer(LevelStaticData levelStaticData) => 
-            _gameFactory.CreatePlayer(levelStaticData.InitialPlayerPosition);
+        private async Task<GameObject> InitializePlayer(LevelStaticData levelStaticData) => 
+            await _gameFactory.CreatePlayer(levelStaticData.InitialPlayerPosition);
 
-        private void InitializeSpawners(LevelStaticData levelStaticData)
+        private async Task InitializeSpawners(LevelStaticData levelStaticData)
         {
             foreach (EnemySpawnerData spawner in levelStaticData.EnemySpawners)
-                _gameFactory.CreateSpawner(spawner.Position, spawner.Id, spawner.EnemyTypeId);
+                await _gameFactory.CreateSpawner(spawner.Position, spawner.Id, spawner.EnemyTypeId);
         }
 
-        private void InitializeHud(GameObject player)
+        private async Task InitializeHud(GameObject player)
         {
-            GameObject hud = _gameFactory.CreateHud();
+            GameObject hud = await _gameFactory.CreateHud();
 
             hud.GetComponentInChildren<ActorUI>()
                 .Construct(player.GetComponent<PlayerHealth>());
